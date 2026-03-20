@@ -5,15 +5,15 @@
 #include "recordcommandbuffer.h"
 
 
-uint32_t drawFrame(VulkanContext ctx, int MAX_FRAMES_IN_FLIGHT, MeshObject m, GLFWwindow* window,
+uint32_t drawFrame(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext ,int MAX_FRAMES_IN_FLIGHT, MeshObject m, GLFWwindow* window,
              bool enableValidationLayers, uint32_t currentFrame) {
-  vkWaitForFences(ctx.device, 1, &ctx.syncresources.inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+  vkWaitForFences(dqcontext.device, 1, &ctx.syncresources.inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
   
   uint32_t imageIndex;
-  VkResult result = vkAcquireNextImageKHR(ctx.device, ctx.swapchaincontext.swapChain, UINT64_MAX, ctx.syncresources.imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+  VkResult result = vkAcquireNextImageKHR(dqcontext.device, ctx.swapchaincontext.swapChain, UINT64_MAX, ctx.syncresources.imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
   
   if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-    recreateSwapChain(ctx, window);
+    recreateSwapChain(ctx, dqcontext, window);
     //ImGui_ImplVulkan_SetMinImageCount(swapChainImageViews.size());
     // TODO: Do we need to take care of anything related to UI ?
     return currentFrame;
@@ -22,7 +22,7 @@ uint32_t drawFrame(VulkanContext ctx, int MAX_FRAMES_IN_FLIGHT, MeshObject m, GL
   }
   
   //updateUniformBuffer(currentFrame);    
-  vkResetFences(ctx.device, 1, &ctx.syncresources.inFlightFences[currentFrame]);
+  vkResetFences(dqcontext.device, 1, &ctx.syncresources.inFlightFences[currentFrame]);
   
   //bool show_demo_window = true;
   //ImVec4 clear_color = ImVec4(0.45f, 0.1f, 0.10f, 1.00f);
@@ -58,7 +58,7 @@ uint32_t drawFrame(VulkanContext ctx, int MAX_FRAMES_IN_FLIGHT, MeshObject m, GL
   submitInfo.signalSemaphoreCount = 1;
   submitInfo.pSignalSemaphores = signalSemaphores;
   
-  if (vkQueueSubmit(ctx.graphicsQueue, 1, &submitInfo, ctx.syncresources.inFlightFences[currentFrame]) != VK_SUCCESS) {
+  if (vkQueueSubmit(dqcontext.graphicsQueue, 1, &submitInfo, ctx.syncresources.inFlightFences[currentFrame]) != VK_SUCCESS) {
     throw std::runtime_error("failed to submit draw command buffer!");
   }
   
@@ -74,11 +74,11 @@ uint32_t drawFrame(VulkanContext ctx, int MAX_FRAMES_IN_FLIGHT, MeshObject m, GL
   
   presentInfo.pImageIndices = &imageIndex;
   
-  vkQueuePresentKHR(ctx.presentQueue, &presentInfo);
+  vkQueuePresentKHR(dqcontext.presentQueue, &presentInfo);
   
   if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
     //framebufferResized = false;
-    recreateSwapChain(ctx, window);
+    recreateSwapChain(ctx, dqcontext,window);
   } else if (result != VK_SUCCESS) {
     throw std::runtime_error("failed to present swap chain image!");
   }

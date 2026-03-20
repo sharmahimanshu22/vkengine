@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
 
 enable_language(OBJC)
 
@@ -8,10 +10,10 @@ project(vulkanengine DESCRIPTION "vulkanengine" LANGUAGES CXX OBJC)
 file(GLOB_RECURSE ENGINE_SOURCES
     src/*.cpp
 )
-add_executable(${PROJECT_NAME})
+add_library(${PROJECT_NAME})
 
-set(ENABLE_SSE2 True)
-set(ENABLE_AVX2 True)
+set(ENABLE_SSE2 False)
+set(ENABLE_AVX2 False)
 
 #####################
 
@@ -91,6 +93,18 @@ target_sources(${PROJECT_NAME} PUBLIC ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp 
 
 add_subdirectory(deps/SDL EXCLUDE_FROM_ALL)
 
+set(TINYGLTF_HEADER_ONLY ON)
+set(TINYGLTF_INSTALL OFF)
+add_subdirectory(deps/tinygltf-2.9.7)
+target_include_directories(${PROJECT_NAME} PUBLIC "deps/tinygltf-2.9.7")
+
+
+#VULKAN MEMORY ALLOCATOR
+
+add_subdirectory(deps/VulkanMemoryAllocator-3.3.0)
+target_link_libraries(${PROJECT_NAME} PRIVATE GPUOpen::VulkanMemoryAllocator)
+
+
 target_include_directories(${PROJECT_NAME} PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/include  ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkanengine ${CMAKE_CURRENT_SOURCE_DIR}/include/window)
 
 # Get the list of include directories for the current directory
@@ -103,7 +117,6 @@ endforeach()
 
 
 
-
 # Final compilation and linking
 target_sources(${PROJECT_NAME} PRIVATE ${ENGINE_SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw ${GLFW_LIBRARIES} Vulkan::Vulkan tinyobjloader openstl_core)
@@ -111,7 +124,14 @@ target_link_libraries(${PROJECT_NAME} PUBLIC glfw ${GLFW_LIBRARIES} Vulkan::Vulk
 
 
 #add_subdirectory(examples/inthomog)
-#add_subdirectory(examples/vkcheck)
+add_subdirectory(examples/example1)
+add_subdirectory(examples/example2)
+
+
+message(STATUS "C Compiler ID: ${CMAKE_C_COMPILER_ID}")
+message(STATUS "C++ Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "C Compiler Version: ${CMAKE_C_COMPILER_VERSION}")
+message(STATUS "C++ Compiler Version: ${CMAKE_CXX_COMPILER_VERSION}")
 
 #GTest and GMock
 #include(cmake/tests.cmake)

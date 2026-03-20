@@ -73,7 +73,7 @@ struct GraphicsPipelineContext {
 };
 
 struct TextureResources {
-    uint32_t index;
+    //uint32_t index;
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
@@ -86,7 +86,7 @@ struct DepthImageResources {
     VkImageView depthImageView{};
 };
 
-struct VulkanContext {
+struct VulkanDeviceAndQueueContext {
     // Core Vulkan handles
     VkInstance instance{};
     VkDebugUtilsMessengerEXT debugMessenger{};
@@ -97,7 +97,9 @@ struct VulkanContext {
     VkDevice device{};
     VkQueue graphicsQueue{};
     VkQueue presentQueue{};
+};
 
+struct VulkanContext {
 
     // Surface + Swapchain
     SwapChainContext swapchaincontext{};
@@ -132,7 +134,4 @@ struct VulkanContext {
     UniformBufferResources uboresources{};
 
     SyncResources syncresources{};
-
-
-
 };

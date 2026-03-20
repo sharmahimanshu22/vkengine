@@ -10,7 +10,9 @@
 #include <openstl/core/stl.h>
 
 
-      
+
+
+
 DataForGPU loadModel(const std::string model_path) {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -93,4 +95,11 @@ DataForGPU loadSTL(std::string filename) {
 
     return dataForGPU;
 }
+
+
+
+
+
+
+
 
