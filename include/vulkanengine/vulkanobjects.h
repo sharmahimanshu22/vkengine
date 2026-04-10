@@ -86,17 +86,39 @@ struct DepthImageResources {
     VkImageView depthImageView{};
 };
 
-struct VulkanDeviceAndQueueContext {
+struct VulkanInstance {
     // Core Vulkan handles
     VkInstance instance{};
     VkDebugUtilsMessengerEXT debugMessenger{};
     VkSurfaceKHR surface{};
+};
+
+struct VulkanDeviceAndQueueContext {
+    
 
     VkPhysicalDevice physicalDevice{};
     QueueFamilyIndices queueFamilies{};
     VkDevice device{};
     VkQueue graphicsQueue{};
     VkQueue presentQueue{};
+
+    VkCommandPool commandPool{};
+};
+
+// NOT USED YET
+struct SwapchainContext {
+    VkSwapchainKHR swapchain{};
+
+    std::vector<VkImage> images;
+    std::vector<VkImageView> imageViews;
+
+    DepthImageResources depth;
+
+    VkRenderPass renderPass{};
+    VkRenderPass uiRenderPass{};
+
+    std::vector<VkCommandBuffer> commandBuffers;
+    std::vector<VkCommandBuffer> uiCommandBuffers;
 };
 
 struct VulkanContext {
@@ -108,7 +130,7 @@ struct VulkanContext {
     std::vector<VkImageView> swapchainImageViews{};
 
     // Command system
-    VkCommandPool commandPool{};
+    
 
     VkRenderPass uiRenderPass{};
     VkRenderPass renderPass{};

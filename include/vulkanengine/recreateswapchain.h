@@ -3,4 +3,4 @@
 #include <vulkan/vulkan_core.h>
 #include "vulkanobjects.h"
 
-void recreateSwapChain(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext, GLFWwindow* window);
+void recreateSwapChain(VulkanInstance vkinstance, VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext, GLFWwindow* window);

@@ -28,7 +28,7 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
     }
 }
 
-void cleanup(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext, int MAX_FRAMES_IN_FLIGHT, MeshObject m, GLFWwindow* window,
+void cleanup(VulkanContext ctx, VulkanInstance vkinstance ,VulkanDeviceAndQueueContext dqcontext, int MAX_FRAMES_IN_FLIGHT, MeshObject m, GLFWwindow* window,
              bool enableValidationLayers  ) 
 {
     cleanupSwapChain(ctx, dqcontext);
@@ -68,16 +68,16 @@ void cleanup(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext, int MAX_F
         vkDestroyFence(dqcontext.device, ctx.syncresources.inFlightFences[i], nullptr);
     }
 
-    vkDestroyCommandPool(dqcontext.device, ctx.commandPool, nullptr);
+    vkDestroyCommandPool(dqcontext.device, dqcontext.commandPool, nullptr);
 
     vkDestroyDevice(dqcontext.device, nullptr);
 
     if (enableValidationLayers) {
-        DestroyDebugUtilsMessengerEXT(dqcontext.instance, dqcontext.debugMessenger, nullptr);
+        DestroyDebugUtilsMessengerEXT(vkinstance.instance, vkinstance.debugMessenger, nullptr);
     }
 
-    vkDestroySurfaceKHR(dqcontext.instance, dqcontext.surface, nullptr);
-    vkDestroyInstance(dqcontext.instance, nullptr);
+    vkDestroySurfaceKHR(vkinstance.instance, vkinstance.surface, nullptr);
+    vkDestroyInstance(vkinstance.instance, nullptr);
 
 
     glfwDestroyWindow(window);

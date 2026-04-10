@@ -8,7 +8,7 @@
 
 
 
-void recreateSwapChain(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext, GLFWwindow* window) {
+void recreateSwapChain(VulkanInstance vkinstance,VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext, GLFWwindow* window) {
 
   int width = 0, height = 0;
   while (width == 0 || height == 0) {
@@ -20,12 +20,12 @@ void recreateSwapChain(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext,
   
   cleanupSwapChain(ctx, dqcontext);
 
-    ctx.swapchaincontext = createSwapChain(dqcontext.physicalDevice, dqcontext.surface, window, dqcontext.device, dqcontext.queueFamilies);
+  ctx.swapchaincontext = createSwapChain(dqcontext.physicalDevice, vkinstance.surface, window, dqcontext.device, dqcontext.queueFamilies);
 
-    ctx.swapchainImageViews = createSwapChainImageViews(dqcontext.device, ctx.swapchaincontext.swapChainImages, ctx.swapchaincontext.swapChainImageFormat);
+  ctx.swapchainImageViews = createSwapChainImageViews(dqcontext.device, ctx.swapchaincontext.swapChainImages, ctx.swapchaincontext.swapChainImageFormat);
 
-    ctx.depthImageResources = createDepthResources(dqcontext.device, dqcontext.physicalDevice, ctx.swapchaincontext.swapChainExtent);
+  ctx.depthImageResources = createDepthResources(dqcontext.device, dqcontext.physicalDevice, ctx.swapchaincontext.swapChainExtent);
 
-    ctx.swapChainFramebuffers = createFramebuffers(dqcontext.device, ctx.swapchainImageViews, ctx.depthImageResources.depthImageView,
+  ctx.swapChainFramebuffers = createFramebuffers(dqcontext.device, ctx.swapchainImageViews, ctx.depthImageResources.depthImageView,
                                                     ctx.renderPass, ctx.swapchaincontext.swapChainExtent);
 }

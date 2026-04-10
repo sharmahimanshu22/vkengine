@@ -5,7 +5,7 @@
 #include "recordcommandbuffer.h"
 
 
-uint32_t drawFrame(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext ,int MAX_FRAMES_IN_FLIGHT, MeshObject m, GLFWwindow* window,
+uint32_t drawFrame(VulkanInstance vkinstance, VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext ,int MAX_FRAMES_IN_FLIGHT, MeshObject m, GLFWwindow* window,
              bool enableValidationLayers, uint32_t currentFrame) {
   vkWaitForFences(dqcontext.device, 1, &ctx.syncresources.inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
   
@@ -13,7 +13,7 @@ uint32_t drawFrame(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext ,int
   VkResult result = vkAcquireNextImageKHR(dqcontext.device, ctx.swapchaincontext.swapChain, UINT64_MAX, ctx.syncresources.imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
   
   if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-    recreateSwapChain(ctx, dqcontext, window);
+    recreateSwapChain(vkinstance, ctx, dqcontext, window);
     //ImGui_ImplVulkan_SetMinImageCount(swapChainImageViews.size());
     // TODO: Do we need to take care of anything related to UI ?
     return currentFrame;
@@ -78,7 +78,7 @@ uint32_t drawFrame(VulkanContext ctx, VulkanDeviceAndQueueContext dqcontext ,int
   
   if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
     //framebufferResized = false;
-    recreateSwapChain(ctx, dqcontext,window);
+    recreateSwapChain(vkinstance, ctx, dqcontext,window);
   } else if (result != VK_SUCCESS) {
     throw std::runtime_error("failed to present swap chain image!");
   }
